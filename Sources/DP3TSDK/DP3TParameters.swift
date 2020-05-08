@@ -89,7 +89,8 @@ public struct DP3TParameters: Codable {
         /// allowed client time inconsistency
         public var timeShiftThreshold: TimeInterval = 30 * .second
         // 2 Hour batches
-        public var batchLength: TimeInterval = TimeInterval.day / 12.0
+//        public var batchLength: TimeInterval = TimeInterval.day / 12.0
+        public var batchLength: TimeInterval = .minute
     }
 
     public struct ContactMatching: Codable {
