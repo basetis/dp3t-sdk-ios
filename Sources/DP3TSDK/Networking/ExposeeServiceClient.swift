@@ -105,23 +105,23 @@ class ExposeeServiceClient: ExposeeServiceClientProtocol {
         }
 
         // Validate JWT
-        if #available(iOS 11.0, *), let verifier = jwtVerifier {
-            do {
-                let claims = try verifier.verify(claimType: ExposeeClaims.self, httpResponse: httpResponse, httpBody: responseData)
-
-                // Verify the batch time
-                let batchReleaseTimeRaw = claims.batchReleaseTime
-                let calimBatchTimestamp = try Int(value: batchReleaseTimeRaw) / 1000
-                guard Int(batchTimestamp.timeIntervalSince1970) == calimBatchTimestamp else {
-                    return .failure(.jwtSignatureError(code: 3, debugDescription: "Batch release time missmatch"))
-                }
-
-            } catch let error as DP3TNetworkingError {
-                return .failure(error)
-            } catch {
-                return .failure(DP3TNetworkingError.jwtSignatureError(code: 200, debugDescription: "Unknown error \(error)"))
-            }
-        }
+//        if #available(iOS 11.0, *), let verifier = jwtVerifier {
+//            do {
+//                let claims = try verifier.verify(claimType: ExposeeClaims.self, httpResponse: httpResponse, httpBody: responseData)
+//
+//                // Verify the batch time
+//                let batchReleaseTimeRaw = claims.batchReleaseTime
+//                let calimBatchTimestamp = try Int(value: batchReleaseTimeRaw) / 1000
+//                guard Int(batchTimestamp.timeIntervalSince1970) == calimBatchTimestamp else {
+//                    return .failure(.jwtSignatureError(code: 3, debugDescription: "Batch release time missmatch"))
+//                }
+//
+//            } catch let error as DP3TNetworkingError {
+//                return .failure(error)
+//            } catch {
+//                return .failure(DP3TNetworkingError.jwtSignatureError(code: 200, debugDescription: "Unknown error \(error)"))
+//            }
+//        }
 
         do {
             let protoList = try ProtoExposedList(serializedData: responseData)
