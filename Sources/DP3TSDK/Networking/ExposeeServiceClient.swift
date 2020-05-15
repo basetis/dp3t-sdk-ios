@@ -182,12 +182,16 @@ class ExposeeServiceClient: ExposeeServiceClientProtocol {
                 return
             }
             guard let httpResponse = response as? HTTPURLResponse else {
+                print("Error! no httpResponse")
                 completion(.failure(.notHTTPResponse))
                 return
             }
 
             let statusCode = httpResponse.statusCode
             guard statusCode == 200 else {
+                print("Error! status code")
+                print(statusCode)
+                print(httpResponse)
                 completion(.failure(.HTTPFailureResponse(status: statusCode)))
                 return
             }
