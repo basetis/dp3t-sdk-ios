@@ -162,6 +162,11 @@ class ExposeeServiceClient: ExposeeServiceClientProtocol {
             request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         request.httpBody = payload
+        
+        print("Add Exposee")
+        print(request)
+        print("body model")
+        print(exposee)
 
         let task = urlSession.dataTask(with: request, completionHandler: { _, response, error in
             guard error == nil else {
