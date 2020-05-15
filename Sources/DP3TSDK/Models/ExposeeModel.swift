@@ -12,7 +12,7 @@ struct ExposeeModel: Encodable {
     let key: Data
 
     /// The onset date
-    let keyDate: DayDate
+    let keyDate: Int
 
     /// Authentication data provided by health institutes to verify test results
     let authData: String?
@@ -26,8 +26,10 @@ struct ExposeeModel: Encodable {
         // Encode auth if present only
         try container.encodeIfPresent(authData, forKey: .authData)
         // Compute date
-        let startOfDayTimestamp = Int(keyDate.dayMin.millisecondsSince1970)
-        try container.encode(startOfDayTimestamp, forKey: .keyDate)
+//        let startOfDayTimestamp = Int(keyDate.dayMin.millisecondsSince1970)
+//        try container.encode(startOfDayTimestamp, forKey: .keyDate)
+        
+        try container.encode(keyDate, forKey: .keyDate)
 
         try container.encode(fake ? 1 : 0, forKey: .fake)
     }

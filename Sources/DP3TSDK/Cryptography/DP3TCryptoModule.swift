@@ -200,6 +200,9 @@ class DP3TCryptoModule {
         }
 
         let key = keys[lastIndexChecked]
+        print("key")
+        print(key)
+        print(key.day)
         return (key.day, key.keyData)
     }
 
