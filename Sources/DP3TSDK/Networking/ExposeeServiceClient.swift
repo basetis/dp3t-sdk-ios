@@ -177,7 +177,6 @@ class ExposeeServiceClient: ExposeeServiceClientProtocol {
                 
                 print("Error!")
                 print(error)
-                print(error?.description)
                 
                 completion(.failure(.networkSessionError(error: error!)))
                 return
