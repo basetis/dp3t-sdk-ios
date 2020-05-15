@@ -246,12 +246,12 @@ class DP3TSDK {
                         (day, key) = try self.crypto.getSecretKeyForPublishing(onsetDate: onset)
                     }
 
-                    let authData: String?
-                    if case let ExposeeAuthMethod.JSONPayload(token: token) = authentication {
-                        authData = token
-                    } else {
-                        authData = nil
-                    }
+                    let authData: String? = nil
+//                    if case let ExposeeAuthMethod.JSONPayload(token: token) = authentication {
+//                        authData = token
+//                    } else {
+//                        authData = nil
+//                    }
                     let model = ExposeeModel(key: key, keyDate: day, authData: authData, fake: isFakeRequest)
                     service.addExposee(model, authentication: authentication) { [weak self] result in
                         DispatchQueue.main.async {
