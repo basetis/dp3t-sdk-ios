@@ -163,13 +163,22 @@ class ExposeeServiceClient: ExposeeServiceClientProtocol {
         }
         request.httpBody = payload
         
+        
         print("Add Exposee")
         print(request)
+        print(request.allHTTPHeaderFields)
+        print(request.httpBody)
         print("body model")
         print(exposee)
+        print(payload)
 
         let task = urlSession.dataTask(with: request, completionHandler: { _, response, error in
             guard error == nil else {
+                
+                print("Error!")
+                print(error)
+                print(error.description)
+                
                 completion(.failure(.networkSessionError(error: error!)))
                 return
             }
