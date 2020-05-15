@@ -252,7 +252,7 @@ class DP3TSDK {
 //                    } else {
 //                        authData = nil
 //                    }
-                    let model = ExposeeModel(key: key, keyDate: Int(day.dayMin.millisecondsSince1970), authData: authData, fake: isFakeRequest)
+                    let model = ExposeeModel(key: key, keyDate: String(day.dayMin.millisecondsSince1970), authData: authData, fake: isFakeRequest)
                     service.addExposee(model, authentication: authentication) { [weak self] result in
                         DispatchQueue.main.async {
                             switch result {

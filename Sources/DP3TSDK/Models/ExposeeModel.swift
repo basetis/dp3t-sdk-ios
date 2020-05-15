@@ -12,7 +12,7 @@ struct ExposeeModel: Encodable {
     let key: Data
 
     /// The onset date
-    let keyDate: Int
+    let keyDate: String
 
     /// Authentication data provided by health institutes to verify test results
     let authData: String?
