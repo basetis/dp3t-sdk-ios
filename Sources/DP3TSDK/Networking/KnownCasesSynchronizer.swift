@@ -44,11 +44,11 @@ class KnownCasesSynchronizer {
     ///   - callback: The callback once the task if finished
     /// - Returns: the operation which can be used to cancel the sync
     @discardableResult
-    func sync(service: ExposeeServiceClientProtocol, now: Date = Date(), callback: Callback?) -> Operation {
+    func sync(service: ExposeeServiceClientProtocol, now: Date = Date(), forceManually: Bool, callback: Callback?) -> Operation {
         let queue = OperationQueue()
 
         let operation = BlockOperation {
-            self.internalSync(service: service, now: now, callback: callback)
+            self.internalSync(service: service, now: now, forceManually: forceManually, callback: callback)
         }
 
         queue.addOperation(operation)
@@ -67,7 +67,7 @@ class KnownCasesSynchronizer {
         return lastBatch
     }
 
-    private func internalSync(service: ExposeeServiceClientProtocol, now: Date = Date(), callback: Callback?) {
+    private func internalSync(service: ExposeeServiceClientProtocol, now: Date = Date(), forceManually: Bool, callback: Callback?) {
         let nowTimestamp = now.timeIntervalSince1970
 
         var lastBatch: TimeInterval!
@@ -78,26 +78,36 @@ class KnownCasesSynchronizer {
             assert(false, "This should never happen if initializeSynchronizerIfNeeded gets called on SDK init")
             lastBatch = KnownCasesSynchronizer.initializeSynchronizerIfNeeded().timeIntervalSince1970
         }
-
+        
+        print("lastBatch \(Date(timeIntervalSince1970: lastBatch).millisecondsSince1970)")
         let batchesToLoad = Int((nowTimestamp - lastBatch) / Default.shared.parameters.networking.batchLength)
+        print("batchesToLoad: \(batchesToLoad)")
 
         let nextBatch = lastBatch + Default.shared.parameters.networking.batchLength
+        print("nextBatch: \(Date(timeIntervalSince1970: nextBatch).millisecondsSince1970)")
 
-        for batchIndex in 0 ..< batchesToLoad {
+        let finalIndex = (forceManually ? batchesToLoad+1 : batchesToLoad)
+        print("finalIndex: \(finalIndex)")
+        for batchIndex in 0 ..< finalIndex {
             let currentReleaseTime = Date(timeIntervalSince1970: nextBatch + Default.shared.parameters.networking.batchLength * TimeInterval(batchIndex))
             let result = service.getExposeeSynchronously(batchTimestamp: currentReleaseTime)
+            print(result)
             switch result {
             case let .failure(error):
                 callback?(.failure(error))
                 return
             case let .success(knownCases):
+                print("KNOWN CASES")
+                print(knownCases)
                 if let knownCases = knownCases {
                     try? database.update(knownCases: knownCases)
                     for knownCase in knownCases {
                         try? matcher?.checkNewKnownCase(knownCase)
                     }
                 }
-                defaults.lastLoadedBatchReleaseTime = currentReleaseTime
+                if batchIndex != batchesToLoad {
+                    defaults.lastLoadedBatchReleaseTime = currentReleaseTime
+                }
             }
         }
 

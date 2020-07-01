@@ -10,7 +10,7 @@ import UIKit.UIApplication
 
 private class SyncOperation: Operation {
     override func main() {
-        DP3TTracing.sync { result in
+        DP3TTracing.sync(forceManually: false) { result in
             switch result {
             case .failure:
                 self.cancel()

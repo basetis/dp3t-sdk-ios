@@ -75,6 +75,7 @@ class ExposeeServiceClient: ExposeeServiceClientProtocol {
         var request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 60.0)
         request.setValue("application/x-protobuf", forHTTPHeaderField: "Accept")
 
+        print(request)
         let (data, response, error) = urlSession.synchronousDataTask(with: request)
 
         guard error == nil else {

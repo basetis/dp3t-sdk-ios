@@ -174,7 +174,7 @@ class DP3TSDK {
     /// Perform a new sync
     /// - Parameter callback: callback
     /// - Throws: if a error happed
-    func sync(callback: ((Result<Void, DP3TTracingError>) -> Void)?) {
+    func sync(forceManually: Bool, callback: ((Result<Void, DP3TTracingError>) -> Void)?) {
         try? database.generateContactsFromHandshakes()
         try? state.numberOfContacts = database.contactsStorage.count()
         try? state.numberOfHandshakes = database.handshakesStorage.count()
@@ -184,7 +184,8 @@ class DP3TSDK {
                 callback?(.failure(error))
                 return
             case let .success(service):
-                self?.synchronizer.sync(service: service) { [weak self] result in
+                print(service)
+                self?.synchronizer.sync(service: service, forceManually: forceManually) { [weak self] result in
                     DispatchQueue.main.async {
                         switch result {
                         case .success:
@@ -246,13 +247,16 @@ class DP3TSDK {
                         (day, key) = try self.crypto.getSecretKeyForPublishing(onsetDate: onset)
                     }
 
-                    let authData: String? = nil
+//                    let authData: String? = nil
 //                    if case let ExposeeAuthMethod.JSONPayload(token: token) = authentication {
 //                        authData = token
 //                    } else {
 //                        authData = nil
 //                    }
-                    let model = ExposeeModel(key: key, keyDate: String(day.dayMin.millisecondsSince1970), authData: authData, fake: isFakeRequest)
+                    
+                    print("key string")
+                    print(key.base64EncodedString())
+                    let model = ExposeeModel(key: key.base64EncodedString(), keyDate: Int(Date().millisecondsSince1970), fake: isFakeRequest ? 1 : 0)
                     service.addExposee(model, authentication: authentication) { [weak self] result in
                         DispatchQueue.main.async {
                             switch result {
@@ -319,6 +323,7 @@ class DP3TSDK {
                 callback(.failure(DP3TTracingError.databaseError(error: error)))
             }
         case let .manual(appInfo):
+            print(appInfo)
             let client = ExposeeServiceClient(descriptor: appInfo, urlSession: urlSession)
             callback(.success(client))
         }
