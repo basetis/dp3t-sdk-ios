@@ -58,11 +58,11 @@ class ExposeeServiceClient: ExposeeServiceClientProtocol {
         self.urlCache = urlCache
         exposeeEndpoint = ExposeeEndpoint(baseURL: descriptor.bucketBaseUrl)
         managingExposeeEndpoint = ManagingExposeeEndpoint(baseURL: descriptor.reportBaseUrl)
-        if #available(iOS 11.0, *), let jwtPublicKey = descriptor.jwtPublicKey {
-            jwtVerifier = DP3TJWTVerifier(publicKey: jwtPublicKey, jwtTokenHeaderKey: "Signature")
-        } else {
+//        if #available(iOS 11.0, *), let jwtPublicKey = descriptor.jwtPublicKey {
+//            jwtVerifier = DP3TJWTVerifier(publicKey: jwtPublicKey, jwtTokenHeaderKey: "Signature")
+//        } else {
             jwtVerifier = nil
-        }
+//        }
     }
 
     /// Get all exposee for a known day synchronously
